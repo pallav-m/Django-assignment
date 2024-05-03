@@ -11,9 +11,11 @@ class Vendor(models.Model):
     average_response_time = models.FloatField(blank=True)
     fulfillment_rate = models.FloatField(blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class PurchaseOrder(models.Model):
-
     STATUS_CHOICES = (
         ('PENDING', 'PENDING'), ('COMPLETED', 'COMPLETED'), ('CANCELLED', 'CANCELLED')
     )
@@ -28,6 +30,9 @@ class PurchaseOrder(models.Model):
     issue_date = models.DateTimeField
     acknowledgment_date = models.DateTimeField(blank=True)
 
+    def __str__(self):
+        return self.po_number
+
 
 class HistPerformance(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
@@ -35,3 +40,6 @@ class HistPerformance(models.Model):
     on_time_delivery_rate = models.FloatField(null=True, blank=True)
     quality_rating_avg = models.FloatField(null=True, blank=True)
     fulfillment_rate = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return self.vendor
