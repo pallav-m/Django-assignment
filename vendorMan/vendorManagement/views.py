@@ -171,6 +171,3 @@ class PurchaseOrderDetailView(APIView):
             {'response': 'PO deleted successfully.'},
             status=status.HTTP_200_OK
         )
-
-
-
