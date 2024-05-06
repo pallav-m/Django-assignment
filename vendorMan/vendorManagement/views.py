@@ -28,6 +28,7 @@ class VendorView(APIView):
             print(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(**vendor_create_api_schema())
     def post(self, request, *args, **kwargs):
         try:
             serializer = VendorSerializer(data=request.data)
@@ -56,67 +57,93 @@ class VendorDetailView(APIView):
         except Vendor.DoesNotExist:
             return None
 
+    @swagger_auto_schema(**vendor_fetch_api_schema())
     def get(self, request, vendor_id, *args, **kwargs):
         """
         Retrieve vendor with given id
         """
 
-        vendor_instance = self.get_vendor(vendor_id)
-        if not vendor_instance:
-            return Response(
-                {'response': 'Vendor does not exist.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        try:
+            vendor_instance = self.get_vendor(vendor_id)
+            if not vendor_instance:
+                return Response(
+                    {'response': 'Vendor does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
 
-        serializer = VendorSerializer(vendor_instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            serializer = VendorSerializer(vendor_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(**vendor_update_api_schema())
     def put(self, request, vendor_id, *args, **kwargs):
         """
         Update vendor with given id if it exists
         """
 
-        vendor_instance = self.get_vendor(vendor_id)
-        if not vendor_instance:
-            return Response(
-                {'response': 'Vendor does not exist.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = VendorSerializer(vendor_instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            vendor_instance = self.get_vendor(vendor_id)
+            if not vendor_instance:
+                return Response(
+                    {'response': 'Vendor does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = VendorSerializer(vendor_instance, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(**vendor_delete_api_schema())
     def delete(self, request, vendor_id, *args, **kwargs):
         """
         Delete vendor with given id if it exists
         """
 
-        vendor_instance = self.get_vendor(vendor_id)
-        if not vendor_instance:
+        try:
+            vendor_instance = self.get_vendor(vendor_id)
+            if not vendor_instance:
+                return Response(
+                    {'response': 'Vendor does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            vendor_instance.delete()
             return Response(
-                {'response': 'Vendor does not exist.'},
-                status=status.HTTP_400_BAD_REQUEST
+                {'response': 'Vendor deleted successfully.'},
+                status=status.HTTP_200_OK
             )
-        vendor_instance.delete()
-        return Response(
-            {'response': 'Vendor deleted successfully.'},
-            status=status.HTTP_200_OK
-        )
+
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class PurchaseOrderView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
-    def post(self, request, *args, **kwargs):
-        serializer = PurchaseOrderSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'response': 'Purchase order created.'},
-                            status=status.HTTP_201_CREATED
-                            )
 
+    @swagger_auto_schema(**purchase_order_create_api_schema())
+    def post(self, request, *args, **kwargs):
+        try:
+            serializer = PurchaseOrderSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'response': 'Purchase order created.'},
+                                status=status.HTTP_201_CREATED
+                                )
+
+        except Exception as e:
+            print(e)
+            return Response({'response': 'Internal server error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(**purchase_order_list_api_schema())
     def get(self, request, *args, **kwargs):
         """
         Get all purchase orders, filtered by vendor_code if it is provided in the request
@@ -139,9 +166,11 @@ class PurchaseOrderView(APIView):
             print(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class PurchaseOrderDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+
     def get_purchase_order(self, po_id):
         """
         Get purchase order instance by po_id if it exists
@@ -153,38 +182,56 @@ class PurchaseOrderDetailView(APIView):
         except PurchaseOrder.DoesNotExist:
             return None
 
+    @swagger_auto_schema(**purchase_order_fetch_api_schema())
     def get(self, request, po_id, *args, **kwargs):
-        po_instance = self.get_purchase_order(po_id)
-        if not po_instance:
-            return Response(
-                {'response': 'Purchase order does not exist.'},
-                 status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = PurchaseOrderSerializer(po_instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            po_instance = self.get_purchase_order(po_id)
+            if not po_instance:
+                return Response(
+                    {'response': 'Purchase order does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = PurchaseOrderSerializer(po_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(**purchase_order_update_api_schema())
     def put(self, request, po_id, *args, **kwargs):
-        po_instance = self.get_purchase_order(po_id)
-        if not po_instance:
-            return Response(
-                {'response': 'Purchase order does not exist.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        serializer = PurchaseOrderSerializer(po_instance, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            po_instance = self.get_purchase_order(po_id)
+            if not po_instance:
+                return Response(
+                    {'response': 'Purchase order does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = PurchaseOrderSerializer(po_instance, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'response': 'PO updated successfully'},
+                                status=status.HTTP_200_OK)
 
-            return Response({'response': 'PO updated successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @swagger_auto_schema(**purchase_order_delete_api_schema())
     def delete(self, request, po_id, *args, **kwargs):
-        po_instance = self.get_purchase_order(po_id)
-        if not po_instance:
+        try:
+            po_instance = self.get_purchase_order(po_id)
+            if not po_instance:
+                return Response(
+                    {'response': 'Purchase order does not exist.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            po_instance.delete()
             return Response(
-                {'response': 'Purchase order does not exist.'},
-                status=status.HTTP_404_NOT_FOUND
+                {'response': 'PO deleted successfully.'},
+                status=status.HTTP_200_OK
             )
-        po_instance.delete()
-        return Response(
-            {'response': 'PO deleted successfully.'},
-            status=status.HTTP_200_OK
-        )
+
+        except Exception as e:
+            print(e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
