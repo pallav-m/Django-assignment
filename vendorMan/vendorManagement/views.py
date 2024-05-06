@@ -3,9 +3,12 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
+from drf_yasg.utils import swagger_auto_schema
 
 from .models import Vendor, PurchaseOrder, HistPerformance
 from .serializers import VendorSerializer, PurchaseOrderSerializer
+
+from .api_docs import *
 
 
 # Create your views here.
@@ -14,6 +17,7 @@ class VendorView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
+    @swagger_auto_schema(**vendor_list_api_schema())
     def get(self, request):
         try:
             vendors = Vendor.objects.all()
