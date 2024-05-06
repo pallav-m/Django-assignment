@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 
 from .models import Vendor, PurchaseOrder, HistPerformance
 from .serializers import VendorSerializer, PurchaseOrderSerializer
@@ -10,6 +11,8 @@ from .serializers import VendorSerializer, PurchaseOrderSerializer
 # Create your views here.
 
 class VendorView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def get(self, request):
         try:
@@ -36,6 +39,8 @@ class VendorView(APIView):
 
 
 class VendorDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     def get_vendor(self, vendor_id):
         """
@@ -98,6 +103,8 @@ class VendorDetailView(APIView):
 
 
 class PurchaseOrderView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     def post(self, request, *args, **kwargs):
         serializer = PurchaseOrderSerializer(data=request.data)
         if serializer.is_valid():
@@ -107,6 +114,9 @@ class PurchaseOrderView(APIView):
                             )
 
     def get(self, request, *args, **kwargs):
+        """
+        Get all purchase orders, filtered by vendor_code if it is provided in the request
+        """
         try:
             vendor = request.GET.get('vendor_code')
             if vendor:
@@ -126,6 +136,8 @@ class PurchaseOrderView(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PurchaseOrderDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     def get_purchase_order(self, po_id):
         """
         Get purchase order instance by po_id if it exists
