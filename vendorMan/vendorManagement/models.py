@@ -1,4 +1,6 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 
 # Create your models here.
@@ -25,7 +27,7 @@ class PurchaseOrder(models.Model):
     delivery_date = models.DateTimeField
     items = models.JSONField(default=dict)
     quantity = models.IntegerField(default=1)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     quality_rating = models.FloatField(null=True, blank=True)
     issue_date = models.DateTimeField
     acknowledgment_date = models.DateTimeField(blank=True)
@@ -36,10 +38,18 @@ class PurchaseOrder(models.Model):
 
 class HistPerformance(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    date = models.DateTimeField
+    date = models.DateTimeField(default=datetime.now())
     on_time_delivery_rate = models.FloatField(null=True, blank=True)
     quality_rating_avg = models.FloatField(null=True, blank=True)
     fulfillment_rate = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.vendor
+
+
+@receiver(pre_save, sender=PurchaseOrder, dispatch_uid="purchase_order_analytics")
+def trigger_analytics(sender, instance, **kwargs):
+    existing_po = PurchaseOrder.objects.get(id=instance.id)
+    if existing_po.status != 'COMPLETED':
+        if instance.status == 'COMPLETED':
+            pass

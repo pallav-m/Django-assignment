@@ -169,6 +169,7 @@ class PurchaseOrderDetailView(APIView):
         serializer = PurchaseOrderSerializer(po_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
+
             return Response({'response': 'PO updated successfully'}, status=status.HTTP_200_OK)
 
     def delete(self, request, po_id, *args, **kwargs):
