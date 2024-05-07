@@ -49,9 +49,9 @@ class HistPerformance(models.Model):
         return self.vendor
 
 
-@receiver(pre_save, sender=PurchaseOrder, dispatch_uid="purchase_order_analytics")
-def trigger_analytics(sender, instance, **kwargs):
-    existing_po = PurchaseOrder.objects.get(id=instance.id)
-    if existing_po.status != 'COMPLETED':
-        if instance.status == 'COMPLETED':
-            pass
+# @receiver(pre_save, sender=PurchaseOrder, dispatch_uid="purchase_order_analytics")
+# def trigger_analytics(sender, instance, **kwargs):
+#     existing_po = PurchaseOrder.objects.get(id=instance.id)
+#     if existing_po.status != 'COMPLETED':
+#         if instance.status == 'COMPLETED':
+#             pass

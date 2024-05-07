@@ -35,9 +35,7 @@ def vendor_create_api_schema():
 def vendor_fetch_api_schema():
     return {
         'tags': ['Vendors'],
-        'manual_parameters': [
-            openapi.Parameter('vendor_id', openapi.IN_QUERY, description="Vendor id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'responses': {
             status.HTTP_200_OK: VendorSerializer,
             status.HTTP_400_BAD_REQUEST: 'Bad Request',
@@ -51,9 +49,7 @@ def vendor_fetch_api_schema():
 def vendor_update_api_schema():
     return {
         'tags': ['Vendors'],
-        'manual_parameters': [
-            openapi.Parameter('vendor_id', openapi.IN_QUERY, description="Vendor id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'request_body': VendorSerializer(),
         'responses': {
             status.HTTP_200_OK: VendorSerializer,
@@ -68,9 +64,7 @@ def vendor_update_api_schema():
 def vendor_delete_api_schema():
     return {
         'tags': ['Vendors'],
-        'manual_parameters': [
-            openapi.Parameter('vendor_id', openapi.IN_QUERY, description="Vendor id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'responses': {
             status.HTTP_200_OK: 'Vendor deleted successfully',
             status.HTTP_400_BAD_REQUEST: 'Bad Request',
@@ -115,9 +109,7 @@ def purchase_order_list_api_schema():
 def purchase_order_fetch_api_schema():
     return {
         'tags': ['Purchase Order'],
-        'manual_parameters': [
-            openapi.Parameter('po_id', openapi.IN_QUERY, description="Purchase order id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'responses': {
             status.HTTP_200_OK: VendorSerializer,
             status.HTTP_400_BAD_REQUEST: 'Bad Request',
@@ -131,9 +123,7 @@ def purchase_order_fetch_api_schema():
 def purchase_order_update_api_schema():
     return {
         'tags': ['Purchase Order'],
-        'manual_parameters': [
-            openapi.Parameter('po_id', openapi.IN_QUERY, description="Purchase order id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'request_body': PurchaseOrderSerializer(),
         'responses': {
             status.HTTP_200_OK: PurchaseOrderSerializer,
@@ -148,9 +138,7 @@ def purchase_order_update_api_schema():
 def purchase_order_delete_api_schema():
     return {
         'tags': ['Purchase Order'],
-        'manual_parameters': [
-            openapi.Parameter('po_id', openapi.IN_QUERY, description="Purchase order id", type=openapi.TYPE_INTEGER,
-                              required=True), ],
+        'manual_parameters': None,
         'responses': {
             status.HTTP_200_OK: 'Purchase order deleted successfully',
             status.HTTP_400_BAD_REQUEST: 'Bad Request',
