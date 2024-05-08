@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ErrorDetail
 
 from ..models import Vendor
 from ..serializers import VendorSerializer
@@ -64,12 +65,7 @@ class TestVendorCreateAPI(APITestCase):
         }
         response = self.client.post(f'/api/vendors/', data=data)
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        #self.assertEquals(response, )
-        print('*****', response)
-
-
-
-
+        self.assertEquals(response.data, {'vendor_code': [ErrorDetail(string='vendor with this vendor code already exists.', code='unique')]})
 
     def tearDown(self):
         pass
