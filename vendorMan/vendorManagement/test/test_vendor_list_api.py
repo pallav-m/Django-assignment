@@ -8,7 +8,9 @@ from ..serializers import VendorSerializer
 
 
 class TestVendorListAPI(APITestCase):
-    """Test suite to list vendors"""
+    """
+    Test suite to list vendors
+    """
 
     def setUp(self):
 

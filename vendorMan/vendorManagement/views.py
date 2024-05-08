@@ -37,9 +37,12 @@ class VendorView(APIView):
                 return Response({'Response': 'Vendor created successfully'},
                                 status=status.HTTP_201_CREATED
                                 )
+            else:
+                print(serializer.errors)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            print(e)
+            print('Exception occurred: ', e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -49,7 +52,7 @@ class VendorDetailView(APIView):
 
     def get_vendor(self, vendor_id):
         """
-        Get vendor instance by vendor_id if it exists
+        Get vendor instance by vendor_id if it exists, otherwise return None.
         """
 
         try:
@@ -98,7 +101,7 @@ class VendorDetailView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            print(e)
+            print('****Exception occurred: ', e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @swagger_auto_schema(**vendor_delete_api_schema())
