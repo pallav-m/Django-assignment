@@ -36,7 +36,7 @@ class TestVendorCreateAPI(APITestCase):
         vendor_serializer = VendorSerializer(vendors, many=True)
 
         self.assertEquals(response1.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(response1.data, {'Response': 'Vendor created successfully'})
+        self.assertEquals(response1.data, {'response': 'Vendor created successfully'})
 
     def test_vendor_create_api_without_authorization(self):
         self.client.credentials(HTTP_AUTHORIZATION='')

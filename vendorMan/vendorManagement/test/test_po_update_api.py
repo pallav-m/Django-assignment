@@ -1,12 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
 from rest_framework.authtoken.models import Token
+from rest_framework.test import APITestCase
 
 from ..models import Vendor, PurchaseOrder
-from ..serializers import VendorSerializer, PurchaseOrderSerializer
-
-from datetime import datetime
 
 
 class TestVendorUpdateAPI(APITestCase):

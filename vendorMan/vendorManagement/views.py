@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render
 from rest_framework import status, permissions
 from rest_framework.views import APIView
@@ -248,10 +250,34 @@ class VendorPerformanceMetricsView(APIView):
     authentication_classes = [TokenAuthentication]
 
     @swagger_auto_schema(**vendor_get_performance_metrics_schema())
-    def get(self, request, vendor_id,  *args, **kwargs):
+    def get(self, request, vendor_id, *args, **kwargs):
         try:
             vendor = Vendor.objects.get(id=vendor_id)
             serializer = VendorPerformanceMetricSerializer(vendor)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Vendor.DoesNotExist:
             return Response({'error': 'Vendor does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AcknowledgeOrderView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request, po_id, *args, **kwargs):
+        try:
+            po_instance = PurchaseOrder.objects.get(id=po_id)
+            po_instance.acknowledgement_date = datetime.now()
+            po_instance.save()
+
+            return Response({'response': 'Acknowledged successfully'},
+                            status=status.HTTP_200_OK)
+
+        except PurchaseOrder.DoesNotExist:
+            return Response(
+                {'response': 'Purchase order does not exist.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            print('********', e)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
