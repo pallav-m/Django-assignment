@@ -96,7 +96,7 @@ class VendorDetailView(APIView):
             serializer = VendorSerializer(vendor_instance, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                return Response({'response': 'Vendor updated successfully.'}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
@@ -211,7 +211,7 @@ class PurchaseOrderDetailView(APIView):
             if not po_instance:
                 return Response(
                     {'response': 'Purchase order does not exist.'},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_400_BAD_REQUEST
                 )
             serializer = PurchaseOrderSerializer(po_instance, data=request.data)
             if serializer.is_valid():
@@ -230,7 +230,7 @@ class PurchaseOrderDetailView(APIView):
             if not po_instance:
                 return Response(
                     {'response': 'Purchase order does not exist.'},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_400_BAD_REQUEST
                 )
             po_instance.delete()
             return Response(

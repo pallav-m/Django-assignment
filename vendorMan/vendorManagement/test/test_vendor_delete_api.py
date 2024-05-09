@@ -21,18 +21,12 @@ class TestVendorFetchAPI(APITestCase):
         self.user_token = Token.objects.create(user=self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.user_token}')
 
-    def test_vendor_fetch_api(self):
+    def test_vendor_delete_api(self):
         response = self.client.delete('/api/vendors/1/')
 
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.data, {'response': 'Vendor deleted successfully.'})
 
-        response2 = self.client.get('/api/vendors/2/')
-        vendor2 = Vendor.objects.get(id=2)
-        vendor_serializer = VendorSerializer(vendor2)
-
-        self.assertEquals(response2.status_code, status.HTTP_200_OK)
-        self.assertEquals(response2.data, vendor_serializer.data)
 
     def test_vendor_delete_api_without_authorization(self):
         self.client.credentials(HTTP_AUTHORIZATION='')

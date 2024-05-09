@@ -38,7 +38,7 @@ class TestVendorUpdateAPI(APITestCase):
         vendor_serializer = VendorSerializer(vendor1)
 
         self.assertEquals(response1.status_code, status.HTTP_200_OK)
-        self.assertEquals(response1.data, data1)
+        self.assertEquals(response1.data, {'response': 'Vendor updated successfully.'})
 
     def test_vendor_update_api_without_authorization(self):
         self.client.credentials(HTTP_AUTHORIZATION='')
@@ -52,7 +52,7 @@ class TestVendorUpdateAPI(APITestCase):
             "average_response_time": 1.0,
             "fulfillment_rate": 0.0
         }
-        response = self.client.put(f'/api/vendors/', data=data1)
+        response = self.client.put(f'/api/vendors/1/', data=data1)
 
         self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
