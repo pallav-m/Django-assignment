@@ -32,7 +32,7 @@ class PurchaseOrder(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     quality_rating = models.FloatField(null=True, blank=True)
     issue_date = models.DateTimeField
-    acknowledgment_date = models.DateTimeField(blank=True)
+    acknowledgment_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.po_number
