@@ -6,6 +6,8 @@ from rest_framework.authtoken.models import Token
 from ..models import Vendor, PurchaseOrder
 from ..serializers import VendorSerializer, PurchaseOrderSerializer
 
+from datetime import datetime
+
 
 class TestVendorUpdateAPI(APITestCase):
     """
@@ -25,18 +27,14 @@ class TestVendorUpdateAPI(APITestCase):
 
     def test_po_update_api(self):
         data1 = {
-            "id": 1,
             "po_number": "123",
             "quantity": 1,
             "status": "COMPLETED",
             "quality_rating": 1.0,
-            "acknowledgment_date": "2024-05-01T11:25:03Z",
             "vendor": 1
         }
 
         response1 = self.client.put('/api/purchase_orders/1/', data=data1)
-        po1 = Vendor.objects.get(id=1)
-        po_serializer = PurchaseOrderSerializer(po1)
 
         self.assertEquals(response1.status_code, status.HTTP_200_OK)
         self.assertEquals(response1.data, {'response': 'PO updated successfully'})
@@ -44,7 +42,6 @@ class TestVendorUpdateAPI(APITestCase):
     def test_po_update_api_without_authorization(self):
         self.client.credentials(HTTP_AUTHORIZATION='')
         data1 = {
-            "id": 1,
             "po_number": "123",
             "quantity": 1,
             "status": "COMPLETED",
@@ -58,7 +55,6 @@ class TestVendorUpdateAPI(APITestCase):
 
     def test_po_update_api_if_vendor_does_not_exist(self):
         data1 = {
-            "id": 1,
             "po_number": "123",
             "quantity": 1,
             "status": "COMPLETED",
