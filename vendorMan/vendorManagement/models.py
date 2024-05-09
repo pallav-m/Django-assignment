@@ -4,7 +4,7 @@ from django.db.models.signals import pre_save
 
 from datetime import datetime
 
-from .analytics import *
+#from .analytics import *
 
 
 # Create your models here.
@@ -51,26 +51,26 @@ class HistPerformance(models.Model):
         return self.vendor
 
 
-@receiver(pre_save, sender=PurchaseOrder, dispatch_uid="purchase_order_analytics")
-def trigger_analytics(sender, instance, **kwargs):
-    try:
-        existing_po = sender.objects.get(id=instance.id)
-        if existing_po.status != 'COMPLETED' and instance.status == 'COMPLETED':
-            dr = delivery_rate(vendor_id=instance.vendor)
-            qra = quality_rating_average(vendor_id=instance.vendor)
-            ffr = fulfillment_rate(vendor_id=instance.vendor)
-            HistPerformance.objects.create(vendor=instance.id, on_time_delivery_rate=dr, quality_rating_avg=qra,
-                                           fulfillment_rate=ffr)
-            vendor = Vendor.objects.get(instance.vendor)
-            vendor.on_time_delivery_rate = dr
-            vendor.fulfillment_rate = ffr
-            vendor.save()
-
-        if instance.acknowledgment_date and existing_po.acknowledgment_date != instance.acknowledgment_date:
-            art = average_response_time(vendor_id=instance.vendor)
-            vendor = Vendor.objects.get(instance.vendor)
-            vendor.average_response_time = art
-            vendor.save()
-    except PurchaseOrder.DoesNotExist:
-        # request is a post request.
-        pass
+# @receiver(pre_save, sender=PurchaseOrder, dispatch_uid="purchase_order_analytics")
+# def trigger_analytics(sender, instance, **kwargs):
+#     try:
+#         existing_po = sender.objects.get(id=instance.id)
+#         if existing_po.status != 'COMPLETED' and instance.status == 'COMPLETED':
+#             dr = delivery_rate(vendor_id=instance.vendor)
+#             qra = quality_rating_average(vendor_id=instance.vendor)
+#             ffr = fulfillment_rate(vendor_id=instance.vendor)
+#             HistPerformance.objects.create(vendor=instance.id, on_time_delivery_rate=dr, quality_rating_avg=qra,
+#                                            fulfillment_rate=ffr)
+#             vendor = Vendor.objects.get(instance.vendor)
+#             vendor.on_time_delivery_rate = dr
+#             vendor.fulfillment_rate = ffr
+#             vendor.save()
+#
+#         if instance.acknowledgment_date and existing_po.acknowledgment_date != instance.acknowledgment_date:
+#             art = average_response_time(vendor_id=instance.vendor)
+#             vendor = Vendor.objects.get(instance.vendor)
+#             vendor.average_response_time = art
+#             vendor.save()
+#     except PurchaseOrder.DoesNotExist:
+#         # request is a post request.
+#         pass

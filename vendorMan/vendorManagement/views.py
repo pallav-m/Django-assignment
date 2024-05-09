@@ -6,7 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from drf_yasg.utils import swagger_auto_schema
 
 from .models import Vendor, PurchaseOrder, HistPerformance
-from .serializers import VendorSerializer, PurchaseOrderSerializer
+from .serializers import VendorSerializer, PurchaseOrderSerializer, VendorPerformanceMetricSerializer
 
 from .api_docs import *
 
@@ -34,7 +34,7 @@ class VendorView(APIView):
             serializer = VendorSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response({'Response': 'Vendor created successfully'},
+                return Response({'response': 'Vendor created successfully'},
                                 status=status.HTTP_201_CREATED
                                 )
             else:
@@ -241,3 +241,17 @@ class PurchaseOrderDetailView(APIView):
         except Exception as e:
             print(e)
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class VendorPerformanceMetricsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    @swagger_auto_schema(**vendor_get_performance_metrics_schema())
+    def get(self, request, vendor_id,  *args, **kwargs):
+        try:
+            vendor = Vendor.objects.get(id=vendor_id)
+            serializer = VendorPerformanceMetricSerializer(vendor)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Vendor.DoesNotExist:
+            return Response({'error': 'Vendor does not exist'}, status=status.HTTP_400_BAD_REQUEST)

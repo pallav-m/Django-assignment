@@ -1,6 +1,6 @@
 from drf_yasg import openapi
 from rest_framework import status
-from .serializers import VendorSerializer, PurchaseOrderSerializer
+from .serializers import VendorSerializer, PurchaseOrderSerializer, VendorPerformanceMetricSerializer
 
 
 def vendor_list_api_schema():
@@ -71,6 +71,20 @@ def vendor_delete_api_schema():
             status.HTTP_401_UNAUTHORIZED: 'Unauthorized',
         },
         'operation_summary': 'Delete a vendor with given vendor_id.',
+        'operation_description': '',
+    }
+
+
+def vendor_get_performance_metrics_schema():
+    return {
+        'tags': ['Vendors'],
+        'manual_parameters': None,
+        'responses': {
+            status.HTTP_200_OK: VendorPerformanceMetricSerializer,
+            status.HTTP_400_BAD_REQUEST: 'Bad Request',
+            status.HTTP_401_UNAUTHORIZED: 'Unauthorized',
+        },
+        'operation_summary': 'Retrieve performance metrics for a vendor with given vendor id.',
         'operation_description': '',
     }
 
